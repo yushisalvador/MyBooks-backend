@@ -1,5 +1,5 @@
 import express, { Application, Request, Response, NextFunction } from "express";
-const PORT = 8080;
+import routes from "./routes/index";
 
 export default function buildServer() {
   const app: Application = express();
@@ -7,6 +7,6 @@ export default function buildServer() {
   app.get("/", (req: Request, res: Response, next: NextFunction) => {
     res.send("Hello world!");
   });
-
+  app.use(routes);
   return app;
 }
