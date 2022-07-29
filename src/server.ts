@@ -7,6 +7,7 @@ export default function buildServer() {
   app.get("/", (req: Request, res: Response, next: NextFunction) => {
     res.send("Hello world!");
   });
+  app.use(express.json());
   app.use(routes);
   return app;
 }
