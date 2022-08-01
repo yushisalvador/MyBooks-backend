@@ -16,7 +16,23 @@ const deleteUser = (username: String) => {
     .catch(console.error());
 };
 
+const loginUser = (username: String, password: String) => {
+  return knex
+    .select("*")
+    .from(usersTable)
+    .where("users.username", username)
+    .andWhere("users.pass", password)
+    .first()
+    .catch(console.error());
+};
+
+const registerNewUser = (userObj: Object) => {
+  return knex.insert(userObj).into(usersTable).catch(console.error());
+};
+
 module.exports = {
   getAllUsers,
   deleteUser,
+  registerNewUser,
+  loginUser,
 };
