@@ -24,3 +24,24 @@ describe("POST User registration", () => {
     expect(findUser.pass).to.not.equal(newUserObj.pass);
   });
 });
+
+describe("POST login", () => {
+  const userObj = fixtures.getUser();
+  const wrongUserObj = {
+    username: "kylehansamu",
+    pass: "wrongpass",
+  };
+
+  before(async () => {
+    await request(app).post("/auth/register").send(userObj);
+  });
+
+  after(async () => {
+    await request(app).delete(`/auth?username=${userObj.username}`);
+  });
+
+  it("should return error 401 when passwords doesn't match", async () => {
+    const login = await request(app).post("/auth/login").send(wrongUserObj);
+    expect(login.statusCode).equals(401);
+  });
+});

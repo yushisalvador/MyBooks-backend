@@ -7,4 +7,10 @@ module.exports = {
       registered_by: "test_user",
     };
   },
+  getUser() {
+    return {
+      username: "kylehansamu",
+      pass: "password",
+    };
+  },
 };
