@@ -12,5 +12,6 @@ router.post("/", booksController.addNewBook);
 
 // Delete req
 router.delete("/", booksController.deleteBook);
+router.delete("/mybooks", booksController.deleteUserBooks);
 
 export default router;

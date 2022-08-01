@@ -7,6 +7,7 @@ module.exports = {
     const allBooks = await bookModel.getAllBooks();
     res.send(allBooks);
   },
+
   async getUserBooks(req: Request, res: Response) {
     const username = req.query.username;
     const userBooks = await bookModel.getUserBooks(username);
@@ -18,7 +19,7 @@ module.exports = {
       author: req.body.author,
       title: req.body.title,
       date_finished: req.body.date_finished,
-      registered_by: req.body.username,
+      registered_by: req.body.registered_by,
     };
 
     await bookModel.addNewBook(bookObj);
@@ -28,6 +29,12 @@ module.exports = {
   async deleteBook(req: Request, res: Response) {
     const id = req.query.id;
     await bookModel.deleteBook(id);
+    res.status(200).send("done!");
+  },
+
+  async deleteUserBooks(req: Request, res: Response) {
+    const username = req.query.username;
+    await bookModel.deleteUserBooks(username);
     res.status(200).send("done!");
   },
 };

@@ -11,7 +11,7 @@ const getUserBooks = (username: String) => {
   return knex
     .select("*")
     .from(booksTable)
-    .where("registered_by", username)
+    .where("books.registered_by", username)
     .catch(console.error());
 };
 
@@ -29,7 +29,15 @@ const editBook = (bookId: Number, update: Object) => {
 const deleteBook = (id: Number) => {
   return knex(booksTable)
     .select("*")
-    .where("id", id)
+    .where("books.id", id)
+    .del()
+    .catch(console.error());
+};
+
+const deleteUserBooks = (username: String) => {
+  return knex(booksTable)
+    .select("*")
+    .where("books.registered_by", username)
     .del()
     .catch(console.error());
 };
@@ -40,4 +48,5 @@ module.exports = {
   addNewBook,
   editBook,
   deleteBook,
+  deleteUserBooks,
 };
