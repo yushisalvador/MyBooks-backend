@@ -15,6 +15,15 @@ describe("POST User registration", () => {
     expect(res.statusCode).equals(201);
   });
 
+  it("should store the username and password to the database", async () => {
+    await request(app).post("/auth/register").send(newUserObj);
+    const allUsers = await request(app).get("/auth");
+    const newUser = await allUsers.body.find(
+      (user: any) => user.username === newUserObj.username
+    );
+    expect(newUser).to.not.equal(undefined);
+  });
+
   it("should never store an unhashed password", async () => {
     await request(app).post("/auth/register").send(newUserObj);
     const allUsers = await request(app).get("/auth");
@@ -23,6 +32,16 @@ describe("POST User registration", () => {
     );
     expect(findUser.pass).to.not.equal(newUserObj.pass);
   });
+});
+
+it("should return 401 if username or password is not given", async () => {
+  const newObj = {
+    password: "12345",
+  };
+  const registerAttempt = await request(app)
+    .post("/auth/register")
+    .send(newObj);
+  expect(registerAttempt.statusCode).to.equal(401);
 });
 
 describe("POST login", () => {
