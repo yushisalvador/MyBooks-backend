@@ -18,13 +18,18 @@ module.exports = {
   },
 
   async addUser(req: Request, res: Response) {
-    const salt = await bcrypt.genSalt(10);
-    const hashedPass = await bcrypt.hash(req.body.pass, salt);
-    const newUser = {
-      username: req.body.username,
-      pass: hashedPass,
-    };
-    await userModel.registerNewUser(newUser);
+    if (req.body.username && req.body.pass) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPass = await bcrypt.hash(req.body.pass, salt);
+      const newUser = {
+        username: req.body.username,
+        pass: hashedPass,
+      };
+      await userModel.registerNewUser(newUser);
+    } else {
+      res.status(401).send("Username and password are required!");
+    }
+
     res.status(201).send("added!");
   },
 
