@@ -1,4 +1,3 @@
-const express = require("express");
 import { Request, Response, NextFunction } from "express";
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
