@@ -1,4 +1,5 @@
-import express, { Application, Request, Response } from "express";
+const express = require("express");
+
 import routes from "./routes/index";
 
 const cors = require("cors");
