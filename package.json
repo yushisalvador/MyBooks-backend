@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc -p .",
+    "build": "tsc",
     "start": "ts-node --esm src/index.ts",
     "dev": "SET NODE_ENV=dev & nodemon -r tsconfig-paths/register src/index.ts",
     "test": "SET NODE_ENV=test & mocha --check-leaks -r tsconfig-paths/register -r ts-node/register \"test/**/*.spec.ts\""
