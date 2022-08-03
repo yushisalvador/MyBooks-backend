@@ -1,7 +1,6 @@
-const express = require("express");
-
 import routes from "./routes/index";
 
+const express = require("express");
 const cors = require("cors");
 
 export default function buildServer() {
