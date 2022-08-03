@@ -1,5 +1,5 @@
-import "dotenv/config";
-import buildServer from "server";
+require("dotenv").config();
+import buildServer from "./server";
 
 const startServer = () => {
   const app = buildServer();
