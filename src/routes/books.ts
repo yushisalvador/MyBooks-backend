@@ -1,7 +1,7 @@
-import { Router, Request, Response } from "express";
+const express = require("express");
+const router = express.Router();
 
 const booksController = require("../books/books.controller");
-const router = Router();
 const middleware = require("../middleware/middleware");
 //Get req
 router.get("/", booksController.getAllBooks);
