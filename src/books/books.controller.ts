@@ -26,6 +26,15 @@ module.exports = {
     res.status(200).send("done!");
   },
 
+  async editBook(req: Request, res: Response) {
+    const id = req.query.id;
+    const newObj = {
+      date_finished: req.body.date_finished,
+    };
+    await bookModel.editBook(id, newObj);
+    res.status(200).send("edit  done!");
+  },
+
   async deleteBook(req: Request, res: Response) {
     const id = req.query.id;
     await bookModel.deleteBook(id);
