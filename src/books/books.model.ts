@@ -19,10 +19,10 @@ const addNewBook = (book: Object) => {
   return knex.insert(book).into(booksTable).catch(console.error());
 };
 
-const editBook = (bookId: Number, update: Object) => {
+const editBook = (id: Number, update: Object) => {
   return knex(booksTable)
     .update(update)
-    .where(bookId, "id")
+    .where("books.id", id)
     .catch(console.error());
 };
 
