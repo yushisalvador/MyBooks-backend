@@ -1,10 +1,10 @@
-import express, { Application } from "express";
+import express, { Application, Request, Response } from "express";
 import routes from "./routes/index";
 
 const cors = require("cors");
 
 export default function buildServer() {
-  const app: Application = express();
+  const app = express();
 
   app.use(cors());
 

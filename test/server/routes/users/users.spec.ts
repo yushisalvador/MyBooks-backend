@@ -1,5 +1,5 @@
 import request from "supertest";
-import buildServer from "server";
+import buildServer from "../../../../src/server";
 import { expect } from "chai";
 const app = buildServer();
 const fixtures = require("../fixtures.ts");

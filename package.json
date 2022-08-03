@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc -p .",
     "dev": "SET NODE_ENV=dev & nodemon -r tsconfig-paths/register src/index.ts",
-    "test": "SET NODE_ENV=test & mocha --check-leaks -r tsconfig-paths/register -r ts-node/register \"src/test/**/*.spec.ts\""
+    "test": "SET NODE_ENV=test & mocha --check-leaks -r tsconfig-paths/register -r ts-node/register \"test/**/*.spec.ts\""
   },
   "repository": {
     "type": "git",
