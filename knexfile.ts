@@ -1,6 +1,7 @@
 require("dotenv").config({
   path: "./.env",
 });
+require("ts-node/register");
 
 module.exports = {
   client: "pg",
