@@ -45,9 +45,9 @@ module.exports = {
       return res.status(401).send("cannot find user");
     }
 
-    const passwordCheck = await bcrypt.compare(req.body.pass, user.pass);
+    const passwordMatches = await bcrypt.compare(req.body.pass, user.pass);
 
-    if (passwordCheck) {
+    if (passwordMatches) {
       await userModel.loginUser(req.body.username, req.body.pass);
       const userInfo = {
         username: req.body.username,

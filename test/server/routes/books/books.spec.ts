@@ -12,6 +12,7 @@ const auth = { Authorization: "Bearer " + token };
 describe("GET /books routes", () => {
   it("should respond with 200", async () => {
     const res = await request(app).get("/books");
+
     expect(res.statusCode).equals(200);
   });
 
@@ -19,10 +20,13 @@ describe("GET /books routes", () => {
     const res = await request(app)
       .get("/books/mybooks?username=caoh_the_nerd")
       .set(auth);
+
     expect(res.statusCode).equals(200);
   });
+
   it("should respond with 401 when retrieving books for a single user, and no header is sent", async () => {
     const res = await request(app).get("/books/mybooks?username=caoh_the_nerd");
+
     expect(res.statusCode).equals(401);
   });
 
@@ -40,6 +44,7 @@ describe("GET /books routes", () => {
     const res = await request(app)
       .get("/books/mybooks?username=crazy_toffer")
       .set(auth);
+
     expect(res.body).to.deep.equal(expected);
     expect(res.statusCode).equals(200);
   });
@@ -55,10 +60,12 @@ describe("POST /books routes", () => {
   });
 
   it("should increment the length of the books in the db ", async () => {
-    const book = fixtures.getBook();
     const res1 = await request(app).get("/books");
     const numBooksBefore = res1.body.length;
+
+    const book = fixtures.getBook();
     await request(app).post("/books").send(book);
+
     const res2 = await request(app).get("/books");
     const numBooksAfter = res2.body.length;
 
@@ -75,6 +82,7 @@ describe("DELETE /books routes", () => {
     const currBooks = await request(app)
       .get(`/books/mybooks?username=${addBook.registered_by}`)
       .set(auth);
+
     const idArr = await currBooks.body.map((book: any) => book.id);
     id = idArr[0];
   });
@@ -88,7 +96,9 @@ describe("DELETE /books routes", () => {
   it("should decrease the length of the books in the db", async () => {
     const res1 = await request(app).get("/books");
     const prevLength = res1.body.length;
+
     await request(app).delete(`/books?id=${id}`);
+
     const res2 = await request(app).get("/books");
     const afterLength = res2.body.length;
 
@@ -101,6 +111,7 @@ describe("PUT books", () => {
   const editObj = {
     date_finished: "2022-03-22T15:00:00.000Z",
   };
+
   beforeEach(async () => {
     await request(app).post("/books").send(addBook);
   });
@@ -118,7 +129,9 @@ describe("PUT books", () => {
 
     const idArr = await currBooks.body.map((book: any) => book.id);
     const id = idArr[0];
+
     const edit = await request(app).put(`/books?id=${id}`).send(editObj);
+
     expect(edit.statusCode).equals(200);
   });
 
@@ -130,9 +143,11 @@ describe("PUT books", () => {
     const idArr = await currBooks.body.map((book: any) => book.id);
     const id = idArr[0];
     await request(app).put(`/books?id=${id}`).send(editObj);
+
     const afterBooks = await request(app)
       .get(`/books/mybooks?username=${addBook.registered_by}`)
       .set(auth);
+
     expect(afterBooks.body).to.not.deep.equal(currBooks.body);
   });
 });

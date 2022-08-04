@@ -19,7 +19,7 @@ describe("POST User registration", () => {
     await request(app).post("/auth/register").send(newUserObj);
     const allUsers = await request(app).get("/auth");
     const newUser = await allUsers.body.find(
-      (user: any) => user.username === newUserObj.username
+      (user) => user.username === newUserObj.username
     );
     expect(newUser).to.not.equal(undefined);
   });
@@ -28,7 +28,7 @@ describe("POST User registration", () => {
     await request(app).post("/auth/register").send(newUserObj);
     const allUsers = await request(app).get("/auth");
     const findUser = await allUsers.body.find(
-      (user: any) => user.username === newUserObj.username
+      (user) => user.username === newUserObj.username
     );
     expect(findUser.pass).to.not.equal(newUserObj.pass);
   });

@@ -5,7 +5,7 @@ const knex = require("knex")(config);
 const usersTable = "users";
 
 const getAllUsers = () => {
-  return knex.select("*").from(usersTable).catch(console.error());
+  return knex.select("*").from(usersTable).catch(console.error);
 };
 
 const deleteUser = (username: String) => {
@@ -13,7 +13,7 @@ const deleteUser = (username: String) => {
     .select("*")
     .where("users.username", username)
     .del()
-    .catch(console.error());
+    .catch(console.error);
 };
 
 const loginUser = (username: String, password: String) => {
@@ -23,11 +23,11 @@ const loginUser = (username: String, password: String) => {
     .where("users.username", username)
     .andWhere("users.pass", password)
     .first()
-    .catch(console.error());
+    .catch(console.error);
 };
 
 const registerNewUser = (userObj: Object) => {
-  return knex.insert(userObj).into(usersTable).catch(console.error());
+  return knex.insert(userObj).into(usersTable).catch(console.error);
 };
 
 module.exports = {
