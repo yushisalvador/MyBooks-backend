@@ -55,6 +55,7 @@ module.exports = {
       };
       const accessToken = jwt.sign(userInfo, process.env.ACCESS_TOKEN_SECRET);
       res.status(200).json({
+        auth: true,
         accessToken: accessToken,
         username: userInfo.username,
       });
