@@ -53,6 +53,7 @@ module.exports = {
         username: req.body.username,
         pass: req.body.pass,
       };
+      console.log(userInfo);
       const accessToken = jwt.sign(userInfo, process.env.ACCESS_TOKEN_SECRET);
       res.status(200).json({
         auth: true,
