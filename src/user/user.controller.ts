@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-import console from "console";
+import { User } from "../types/types";
 import { Request, Response } from "express";
 const config = require("../../knexfile");
 const knex = require("knex")(config);
@@ -39,7 +39,7 @@ module.exports = {
   async login(req: Request, res: Response) {
     const users = await knex.select("*").from("users");
     const user = users.find(
-      (userObj: any) => userObj.username === req.body.username
+      (userObj: User) => userObj.username === req.body.username
     );
     if (user === null) {
       return res.status(401).send("cannot find user");
