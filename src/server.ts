@@ -1,5 +1,5 @@
 import routes from "./routes/index";
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 
 const express = require("express");
 const cors = require("cors");
@@ -7,8 +7,8 @@ const cors = require("cors");
 export default function buildServer() {
   const app = express();
 
-  function solveCorsIssue(req: Request, res: Response, next: any) {
-    res.header("Access-Control-Allow-Origin", "*");
+  function solveCorsIssue(req: Request, res: Response, next: NextFunction) {
+    res.header("Access-Control-Allow-Origin", "http://localhost/8080");
     res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
     res.header(
       "Access-Control-Allow-Headers",
