@@ -19,8 +19,20 @@ module.exports = {
     await userModel.deleteUser(username);
     res.status(200).send("done!");
   },
-
+  // function to register a new user. upon rgeistration, the password is hashed before being stored in the database.
   async addUser(req: Request, res: Response) {
+    const allUsers = await knex.select("*").from("users");
+    const checkIfUserNameExists = await allUsers.find((user: User) => {
+      user.username === req.body.username;
+    });
+
+    if (checkIfUserNameExists) {
+      res
+        .status(409)
+        .send(
+          "A user with this username already exists. Please choose a different username."
+        );
+    }
     if (req.body.username && req.body.pass) {
       const salt = await bcrypt.genSalt(10);
       const hashedPass = await bcrypt.hash(req.body.pass, salt);
@@ -36,14 +48,16 @@ module.exports = {
     res.status(201).send("added!");
   },
 
+  //function to login an existing user.First, the function checks if the username exists in the db.
+  // After that, password is read an access token is provided if successful
   async login(req: Request, res: Response) {
     const users = await knex.select("*").from("users");
     const user = users.find(
       (userObj: User) => userObj.username === req.body.username
     );
 
-    if (user === null) {
-      return res.status(401).send("cannot find user");
+    if (!user) {
+      return res.status(404).send("cannot find user");
     }
 
     const passwordMatches = await bcrypt.compare(req.body.pass, user.pass);
