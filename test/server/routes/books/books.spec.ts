@@ -3,6 +3,7 @@ require("dotenv").config();
 import request from "supertest";
 import buildServer from "../../../../src/server";
 import { expect } from "chai";
+import { Book } from "../../../../src/types/types";
 
 const app = buildServer();
 const fixtures = require("../fixtures.ts");
@@ -83,7 +84,7 @@ describe("DELETE /books routes", () => {
       .get(`/books/mybooks?username=${addBook.registered_by}`)
       .set(auth);
 
-    const idArr = await currBooks.body.map((book: any) => book.id);
+    const idArr = await currBooks.body.map((book: Book) => book.id);
     id = idArr[0];
   });
 
@@ -127,7 +128,7 @@ describe("PUT books", () => {
       .get(`/books/mybooks?username=${addBook.registered_by}`)
       .set(auth);
 
-    const idArr = await currBooks.body.map((book: any) => book.id);
+    const idArr = await currBooks.body.map((book: Book) => book.id);
     const id = idArr[0];
 
     const edit = await request(app).put(`/books?id=${id}`).send(editObj);
@@ -140,7 +141,7 @@ describe("PUT books", () => {
       .get(`/books/mybooks?username=${addBook.registered_by}`)
       .set(auth);
 
-    const idArr = await currBooks.body.map((book: any) => book.id);
+    const idArr = await currBooks.body.map((book: Book) => book.id);
     const id = idArr[0];
     await request(app).put(`/books?id=${id}`).send(editObj);
 
