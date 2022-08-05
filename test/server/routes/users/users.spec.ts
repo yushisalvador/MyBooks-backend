@@ -3,7 +3,7 @@ import buildServer from "../../../../src/server";
 import { expect } from "chai";
 const app = buildServer();
 const fixtures = require("../fixtures.ts");
-
+import { User } from "../../../../src/types/types";
 describe("POST User registration", () => {
   const newUserObj = fixtures.getUser();
   afterEach(async () => {
@@ -19,7 +19,7 @@ describe("POST User registration", () => {
     await request(app).post("/auth/register").send(newUserObj);
     const allUsers = await request(app).get("/auth");
     const newUser = await allUsers.body.find(
-      (user) => user.username === newUserObj.username
+      (user: User) => user.username === newUserObj.username
     );
     expect(newUser).to.not.equal(undefined);
   });
@@ -28,7 +28,7 @@ describe("POST User registration", () => {
     await request(app).post("/auth/register").send(newUserObj);
     const allUsers = await request(app).get("/auth");
     const findUser = await allUsers.body.find(
-      (user) => user.username === newUserObj.username
+      (user: User) => user.username === newUserObj.username
     );
     expect(findUser.pass).to.not.equal(newUserObj.pass);
   });
@@ -44,7 +44,7 @@ it("should return 401 if username or password is not given", async () => {
   expect(registerAttempt.statusCode).to.equal(401);
 });
 
-describe("POST login", () => {
+describe("POST login errors", () => {
   const userObj = fixtures.getUser();
   const wrongUserObj = {
     username: "kylehansamu",
@@ -62,5 +62,22 @@ describe("POST login", () => {
   it("should return error 401 when passwords doesn't match", async () => {
     const login = await request(app).post("/auth/login").send(wrongUserObj);
     expect(login.statusCode).equals(401);
+  });
+});
+
+describe("POST login success", () => {
+  const userObj = fixtures.getUser();
+
+  before(async () => {
+    await request(app).post("/auth/register").send(userObj);
+  });
+  after(async () => {
+    await request(app).delete(`/auth?username=${userObj.username}`);
+  });
+
+  it("should respond with the access token when the login is successful", async () => {
+    const login = await request(app).post("/auth/login").send(userObj);
+    expect(login.statusCode).equals(200);
+    expect(login.body).to.include.keys("accessToken");
   });
 });
