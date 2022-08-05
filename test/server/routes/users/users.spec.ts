@@ -46,8 +46,12 @@ it("should return 401 if username or password is not given", async () => {
 
 describe("POST login errors", () => {
   const userObj = fixtures.getUser();
-  const wrongUserObj = {
+  const wrongPassUserObj = {
     username: "kylehansamu",
+    pass: "wrongpass",
+  };
+  const wrongUsernameObj = {
+    username: "kyle_notfound",
     pass: "wrongpass",
   };
 
@@ -60,8 +64,13 @@ describe("POST login errors", () => {
   });
 
   it("should return error 401 when passwords doesn't match", async () => {
-    const login = await request(app).post("/auth/login").send(wrongUserObj);
+    const login = await request(app).post("/auth/login").send(wrongPassUserObj);
     expect(login.statusCode).equals(401);
+  });
+
+  it("should return status 404 if the user with the username is not found", async () => {
+    const login = await request(app).post("/auth/login").send(wrongUsernameObj);
+    expect(login.statusCode).equals(404);
   });
 });
 
