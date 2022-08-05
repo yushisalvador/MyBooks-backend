@@ -8,7 +8,10 @@ export default function buildServer() {
   const app = express();
 
   function solveCorsIssue(req: Request, res: Response, next: NextFunction) {
-    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Origin",
+      "http://little-books.s3-website-ap-northeast-1.amazonaws.com/"
+    );
     res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
     res.header(
       "Access-Control-Allow-Headers",

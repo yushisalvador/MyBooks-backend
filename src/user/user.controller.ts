@@ -41,6 +41,7 @@ module.exports = {
     const user = users.find(
       (userObj: User) => userObj.username === req.body.username
     );
+
     if (user === null) {
       return res.status(401).send("cannot find user");
     }
@@ -49,12 +50,14 @@ module.exports = {
 
     if (passwordMatches) {
       await userModel.loginUser(req.body.username, req.body.pass);
+
       const userInfo = {
         username: req.body.username,
         pass: req.body.pass,
       };
-      console.log(userInfo);
+
       const accessToken = jwt.sign(userInfo, process.env.ACCESS_TOKEN_SECRET);
+
       res.status(200).json({
         auth: true,
         accessToken: accessToken,
