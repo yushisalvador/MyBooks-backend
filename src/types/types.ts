@@ -3,7 +3,7 @@ import { type } from "os";
 export type User = {
   id: Number;
   username: String;
-  password: String;
+  pass: String;
 };
 
 export type Book = {
