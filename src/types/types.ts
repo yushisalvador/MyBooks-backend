@@ -6,7 +6,7 @@ export type User = {
   password: String;
 };
 
-export type Books = {
+export type Book = {
   id: Number;
   author: String;
   title: String;
