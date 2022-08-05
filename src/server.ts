@@ -10,7 +10,7 @@ export default function buildServer() {
   function solveCorsIssue(req: Request, res: Response, next: NextFunction) {
     res.header(
       "Access-Control-Allow-Origin",
-      "https://d317g6gtx7oo04.cloudfront.net/"
+      "https://62ecb1a645349f10fe39b7b0--resplendent-choux-f0a075.netlify.app/"
     );
     res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
     res.header(
