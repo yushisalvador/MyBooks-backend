@@ -73,7 +73,7 @@ describe("POST /books routes", () => {
     expect(numBooksAfter).greaterThan(numBooksBefore);
   });
 
-  it("should return status 401 when no author or title is entered", async () => {
+  it("should return status 404 when no author or title is entered", async () => {
     const postObj1 = {
       author: null,
       title: "JLPT N4 Book",
@@ -86,8 +86,8 @@ describe("POST /books routes", () => {
     const res1 = await request(app).post("/books").send(postObj1);
     const res2 = await request(app).post("/books").send(postObj2);
 
-    expect(res1.statusCode).equals(401);
-    expect(res2.statusCode).equals(401);
+    expect(res1.statusCode).equals(404);
+    expect(res2.statusCode).equals(404);
   });
 });
 
@@ -167,5 +167,19 @@ describe("PUT books", () => {
       .set(auth);
 
     expect(afterBooks.body).to.not.deep.equal(currBooks.body);
+  });
+
+  it("should return status 204 when body is empty", async () => {
+    const currBooks = await request(app)
+      .get(`/books/mybooks?username=${addBook.registered_by}`)
+      .set(auth);
+
+    const idArr = await currBooks.body.map((book: Book) => book.id);
+    const id = idArr[0];
+    const res = await request(app)
+      .put(`/books?id=${id}`)
+      .send({ date_finished: null });
+
+    expect(res.statusCode).equals(404);
   });
 });

@@ -24,17 +24,22 @@ const addNewBook = async (req: Request, res: Response) => {
     await bookModel.addNewBook(bookObj);
     res.status(200).send("done!");
   } else {
-    res.status(401).send("title and author are required!");
+    res.status(404).send("title and author are required!");
   }
 };
 
 const editBook = async (req: Request, res: Response) => {
   const id = req.query.id;
-  const newObj = {
-    date_finished: req.body.date_finished,
-  };
-  await bookModel.editBook(id, newObj);
-  res.status(200).send("edit  done!");
+  if (req.body.date_finished) {
+    const newObj = {
+      date_finished: req.body.date_finished,
+    };
+
+    await bookModel.editBook(id, newObj);
+    res.status(200).send("edit  done!");
+  } else {
+    res.status(404).send("No content");
+  }
 };
 
 const deleteBook = async (req: Request, res: Response) => {
