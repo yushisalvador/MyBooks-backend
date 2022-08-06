@@ -72,6 +72,23 @@ describe("POST /books routes", () => {
 
     expect(numBooksAfter).greaterThan(numBooksBefore);
   });
+
+  it("should return status 401 when no author or title is entered", async () => {
+    const postObj1 = {
+      author: null,
+      title: "JLPT N4 Book",
+    };
+    const postObj2 = {
+      author: "Stephen King",
+      title: null,
+    };
+
+    const res1 = await request(app).post("/books").send(postObj1);
+    const res2 = await request(app).post("/books").send(postObj2);
+
+    expect(res1.statusCode).equals(401);
+    expect(res2.statusCode).equals(401);
+  });
 });
 
 describe("DELETE /books routes", () => {
