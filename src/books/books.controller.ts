@@ -14,24 +14,32 @@ const getUserBooks = async (req: Request, res: Response) => {
 };
 
 const addNewBook = async (req: Request, res: Response) => {
-  const bookObj = {
-    author: req.body.author,
-    title: req.body.title,
-    date_finished: req.body.date_finished,
-    registered_by: req.body.registered_by,
-  };
-
-  await bookModel.addNewBook(bookObj);
-  res.status(200).send("done!");
+  if (req.body.author && req.body.title) {
+    const bookObj = {
+      author: req.body.author,
+      title: req.body.title,
+      date_finished: req.body.date_finished,
+      registered_by: req.body.registered_by,
+    };
+    await bookModel.addNewBook(bookObj);
+    res.status(200).send("done!");
+  } else {
+    res.status(404).send("title and author are required!");
+  }
 };
 
 const editBook = async (req: Request, res: Response) => {
   const id = req.query.id;
-  const newObj = {
-    date_finished: req.body.date_finished,
-  };
-  await bookModel.editBook(id, newObj);
-  res.status(200).send("edit  done!");
+  if (req.body.date_finished) {
+    const newObj = {
+      date_finished: req.body.date_finished,
+    };
+
+    await bookModel.editBook(id, newObj);
+    res.status(200).send("edit  done!");
+  } else {
+    res.status(404).send("No content");
+  }
 };
 
 const deleteBook = async (req: Request, res: Response) => {
