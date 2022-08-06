@@ -19,7 +19,7 @@ module.exports = {
     await userModel.deleteUser(username);
     res.status(200).send("done!");
   },
-  // function to register a new user. upon rgeistration, the password is hashed before being stored in the database.
+  // function to register a new user. upon registration, the password is hashed before being stored to the database.
   async addUser(req: Request, res: Response) {
     const allUsers = await knex.select("*").from("users");
     const checkIfUserNameExists = await allUsers.find((user: User) => {
