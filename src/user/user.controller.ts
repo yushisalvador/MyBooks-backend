@@ -22,9 +22,9 @@ module.exports = {
   // function to register a new user. upon registration, the password is hashed before being stored to the database.
   async addUser(req: Request, res: Response) {
     const allUsers = await knex.select("*").from("users");
-    const checkIfUserNameExists = await allUsers.find((user: User) => {
-      user.username === req.body.username;
-    });
+    const checkIfUserNameExists = allUsers.find(
+      (user: User) => user.username === req.body.username
+    );
 
     if (checkIfUserNameExists) {
       res
@@ -32,8 +32,7 @@ module.exports = {
         .send(
           "A user with this username already exists. Please choose a different username."
         );
-    }
-    if (req.body.username && req.body.pass) {
+    } else if (req.body.username && req.body.pass) {
       const salt = await bcrypt.genSalt(10);
       const hashedPass = await bcrypt.hash(req.body.pass, salt);
       const newUser = {
@@ -41,11 +40,10 @@ module.exports = {
         pass: hashedPass,
       };
       await userModel.registerNewUser(newUser);
+      res.status(201).send("added!");
     } else {
       res.status(401).send("Username and password are required!");
     }
-
-    res.status(201).send("added!");
   },
 
   //function to login an existing user.First, the function checks if the username exists in the db.
