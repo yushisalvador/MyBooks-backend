@@ -7,6 +7,7 @@ router.get("/", userController.getAllUsers);
 //POST
 router.post("/register", userController.addUser);
 router.post("/login", userController.login);
+router.post("/token", userController.getAccessToken);
 
 //DELETE
 

@@ -17,12 +17,11 @@ const deleteUser = (username: String) => {
     .catch(console.error);
 };
 
-const loginUser = (username: String, password: String) => {
+const getUser = (username: String, password: String) => {
   return knex
     .select("*")
     .from(usersTable)
     .where("users.username", username)
-    .andWhere("users.pass", password)
     .first()
     .catch(console.error);
 };
@@ -35,5 +34,5 @@ module.exports = {
   getAllUsers,
   deleteUser,
   registerNewUser,
-  loginUser,
+  getUser,
 };
