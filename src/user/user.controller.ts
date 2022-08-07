@@ -6,7 +6,7 @@ const config = require("../../knexfile");
 const knex = require("knex")(config);
 const bcrypt = require("bcrypt");
 const userModel = require("./user.model.ts");
-const jwt = require("jsonwebtoken");
+import generateTokens from "../utils/generateToken";
 
 module.exports = {
   async getAllUsers(req: Request, res: Response) {
@@ -59,24 +59,25 @@ module.exports = {
     }
 
     const passwordMatches = await bcrypt.compare(req.body.pass, user.pass);
-
-    if (passwordMatches) {
-      await userModel.loginUser(req.body.username, req.body.pass);
-
-      const userInfo = {
-        username: req.body.username,
-        pass: req.body.pass,
-      };
-
-      const accessToken = jwt.sign(userInfo, process.env.ACCESS_TOKEN_SECRET);
-
-      res.status(200).json({
-        auth: true,
-        accessToken: accessToken,
-        username: userInfo.username,
-      });
-    } else {
+    if (!passwordMatches) {
       res.status(401).send("could not verify user!");
+      return;
     }
+    await userModel.loginUser(req.body.username, req.body.pass);
+
+    const tokens = await generateTokens(user);
+    if (tokens === null) {
+      res.status(401).send("could not generate tokens!");
+      return;
+    }
+    const { accessToken, refreshToken } = tokens;
+
+    res.status(200).json({
+      auth: true,
+      username: user.username,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+      message: "Logged in successfully",
+    });
   },
 };

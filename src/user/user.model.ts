@@ -3,6 +3,7 @@ export {};
 const config = require("../../knexfile");
 const knex = require("knex")(config);
 const usersTable = "users";
+const tokensTable = "tokens";
 
 const getAllUsers = () => {
   return knex.select("*").from(usersTable).catch(console.error);

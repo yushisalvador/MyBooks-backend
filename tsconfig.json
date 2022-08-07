@@ -104,7 +104,7 @@
   },
 
   "exclude": ["node_modules"],
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "utils/generateToken.ts"],
   "ts-node": {
     "esm": true,
     "experimentalSpecifierResolution": "node"
