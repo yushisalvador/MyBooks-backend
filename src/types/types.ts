@@ -13,3 +13,8 @@ export type Book = {
   registered_by: String;
   date_finished: Date;
 };
+
+export type Token = {
+  id: Number;
+  refreshToken: String;
+};

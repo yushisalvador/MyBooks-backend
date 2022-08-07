@@ -6,6 +6,7 @@ const config = require("../../knexfile");
 const knex = require("knex")(config);
 const bcrypt = require("bcrypt");
 const userModel = require("./user.model.ts");
+import generateTokens from "../utils/generateToken";
 const jwt = require("jsonwebtoken");
 
 module.exports = {
@@ -49,34 +50,59 @@ module.exports = {
   //function to login an existing user.First, the function checks if the username exists in the db.
   // After that, password is read an access token is provided if successful
   async login(req: Request, res: Response) {
-    const users = await knex.select("*").from("users");
-    const user = users.find(
-      (userObj: User) => userObj.username === req.body.username
-    );
+    const user = await userModel.getUser(req.body.username);
 
     if (!user) {
       return res.status(404).send("cannot find user");
     }
 
     const passwordMatches = await bcrypt.compare(req.body.pass, user.pass);
-
-    if (passwordMatches) {
-      await userModel.loginUser(req.body.username, req.body.pass);
-
-      const userInfo = {
-        username: req.body.username,
-        pass: req.body.pass,
-      };
-
-      const accessToken = jwt.sign(userInfo, process.env.ACCESS_TOKEN_SECRET);
-
-      res.status(200).json({
-        auth: true,
-        accessToken: accessToken,
-        username: userInfo.username,
-      });
-    } else {
-      res.status(401).send("could not verify user!");
+    if (!passwordMatches) {
+      return res.status(401).send("could not verify user!");
     }
+
+    const tokens = await generateTokens(user);
+    if (tokens === null) {
+      return res.status(401).send("could not generate tokens!");
+    }
+    const { accessToken, refreshToken } = tokens;
+
+    res.status(200).json({
+      auth: true,
+      username: user.username,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+      message: "Logged in successfully",
+    });
+  },
+
+  async getAccessToken(req: Request, res: Response) {
+    const refreshToken: String = req.body.refreshToken;
+    const username: String = req.body.username;
+    // - if refreshToken is not present in the database, 403
+    const dbRefreshToken = await knex
+      .select("refreshToken")
+      .from("tokens")
+      .where("tokens.refreshToken", refreshToken);
+    if (!dbRefreshToken) {
+      return res.status(403).send("could not find refreshToken in database");
+    }
+    // - if refreshToken is not valid, 403
+    const isVerified = await jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET
+    );
+    if (!isVerified) {
+      return res.status(403).send("failed to verify refreshToken");
+    }
+    // - if refreshToken is valid, generate access token
+    const accessToken = jwt.sign(
+      { username: username },
+      process.env.ACCESS_TOKEN_SECRET,
+      {
+        expiresIn: "15m",
+      }
+    );
+    return res.status(200).send({ accessToken: accessToken });
   },
 };

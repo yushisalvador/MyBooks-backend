@@ -25,10 +25,10 @@ describe("GET /books routes", () => {
     expect(res.statusCode).equals(200);
   });
 
-  it("should respond with 401 when retrieving books for a single user, and no header is sent", async () => {
+  it("should respond with 403 when retrieving books for a single user, and no header is sent", async () => {
     const res = await request(app).get("/books/mybooks?username=caoh_the_nerd");
 
-    expect(res.statusCode).equals(401);
+    expect(res.statusCode).equals(403);
   });
 
   it("should return the array of books owned by the user", async () => {
@@ -37,7 +37,7 @@ describe("GET /books routes", () => {
         id: 3,
         author: "James Clear",
         title: "Atomic Habits",
-        date_finished: "2022-03-21T15:00:00.000Z",
+        date_finished: "2022-05-22T15:00:00.000Z",
         registered_by: "crazy_toffer",
       },
     ];
@@ -53,11 +53,11 @@ describe("GET /books routes", () => {
 
 describe("POST /books routes", () => {
   before(async () => {
-    await request(app).delete("/books/mybooks?username=testing_1").set(auth);
+    await request(app).delete("/books/mybooks?username=test_user").set(auth);
   });
 
   after(async () => {
-    await request(app).delete("/books/mybooks?username=testing_1").set(auth);
+    await request(app).delete("/books/mybooks?username=test_user").set(auth);
   });
 
   it("should increment the length of the books in the db ", async () => {
