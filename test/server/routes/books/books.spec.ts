@@ -25,10 +25,10 @@ describe("GET /books routes", () => {
     expect(res.statusCode).equals(200);
   });
 
-  it("should respond with 401 when retrieving books for a single user, and no header is sent", async () => {
+  it("should respond with 403 when retrieving books for a single user, and no header is sent", async () => {
     const res = await request(app).get("/books/mybooks?username=caoh_the_nerd");
 
-    expect(res.statusCode).equals(401);
+    expect(res.statusCode).equals(403);
   });
 
   it("should return the array of books owned by the user", async () => {
