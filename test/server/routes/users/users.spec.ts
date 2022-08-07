@@ -84,9 +84,10 @@ describe("POST login success", () => {
     await request(app).delete(`/auth?username=${userObj.username}`);
   });
 
-  it("should respond with the access token when the login is successful", async () => {
+  it("should respond with the access token and refresh token when the login is successful", async () => {
     const login = await request(app).post("/auth/login").send(userObj);
     expect(login.statusCode).equals(200);
     expect(login.body).to.include.keys("accessToken");
+    expect(login.body).to.include.keys("refreshToken");
   });
 });
