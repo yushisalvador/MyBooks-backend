@@ -19,12 +19,12 @@ const generateTokens = async (user: User): Promise<Tokens | null> => {
       payload,
       process.env.ACCESS_TOKEN_SECRET,
       {
-        expiresIn: "15m",
+        expiresIn: "1m", // TODO: make this 15m and deduplicate
       }
     );
     const refreshToken: Token = jwt.sign(
       payload,
-      process.env.ACCESS_TOKEN_SECRET,
+      process.env.REFRESH_TOKEN_SECRET,
       {
         expiresIn: "30d",
       }
@@ -34,16 +34,18 @@ const generateTokens = async (user: User): Promise<Tokens | null> => {
       .select("*")
       .from("tokens")
       .where("user_id", user.id);
-    console.log(token, "TOKEEEEEN");
 
     if (token) {
+      console.log("refresh token already in database - updating it");
       await knex("tokens")
         .update({ refreshToken: refreshToken })
         .where("user_id", user.id);
+    } else {
+      console.log("adding new refresh token to database");
+      await knex
+        .insert({ user_id: user.id, refreshToken: refreshToken })
+        .into("tokens");
     }
-    await knex
-      .insert({ user_id: user.id, refreshToken: refreshToken })
-      .into("tokens");
 
     return { accessToken, refreshToken };
   } catch (err) {
