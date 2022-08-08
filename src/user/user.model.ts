@@ -33,3 +33,10 @@ export function registerNewUser(userObj: Object) {
 export function logout(id: Number) {
   return knex.select("*").from(tokensTable).where("user_id", id).del();
 }
+
+export function getRefreshToken(refreshToken: String) {
+  return knex
+    .select("*")
+    .from(tokensTable)
+    .where("tokens.refreshToken", refreshToken);
+}

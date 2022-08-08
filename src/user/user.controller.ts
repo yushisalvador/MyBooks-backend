@@ -1,13 +1,14 @@
 require("dotenv").config();
 
-import { User } from "../types/types";
 import { Request, Response } from "express";
-const config = require("../../knexfile");
-const knex = require("knex")(config);
+import {
+  generateAccessToken,
+  generateTokens,
+  verifyToken,
+} from "../utils/generateToken";
+
 const bcrypt = require("bcrypt");
 const userModel = require("./user.model.ts");
-import { generateAccessToken, generateTokens } from "../utils/generateToken";
-const jwt = require("jsonwebtoken");
 
 export async function getAllUsers(req: Request, res: Response) {
   const allUsers = await userModel.getAllUsers();
@@ -19,24 +20,23 @@ export async function deleteUser(req: Request, res: Response) {
   await userModel.deleteUser(username);
   res.status(200).send("done!");
 }
-// function to register a new user. upon registration, the password is hashed before being stored to the database.
+// function to register a new user. upon registration,
+//the password is hashed before being stored to the database.
 export async function addUser(req: Request, res: Response) {
-  const allUsers = await knex.select("*").from("users");
-  const checkIfUserNameExists = allUsers.find(
-    (user: User) => user.username === req.body.username
-  );
-
-  if (checkIfUserNameExists) {
+  const username: String = req.body.username;
+  const password: String = req.body.pass;
+  const existingUser = await userModel.getUser(username);
+  if (existingUser) {
     res
       .status(409)
       .send(
         "A user with this username already exists. Please choose a different username."
       );
-  } else if (req.body.username && req.body.pass) {
+  } else if (username && password) {
     const salt = await bcrypt.genSalt(10);
-    const hashedPass = await bcrypt.hash(req.body.pass, salt);
+    const hashedPass = await bcrypt.hash(password, salt);
     const newUser = {
-      username: req.body.username,
+      username: username,
       pass: hashedPass,
     };
     await userModel.registerNewUser(newUser);
@@ -78,20 +78,15 @@ export async function login(req: Request, res: Response) {
 export async function getAccessToken(req: Request, res: Response) {
   const refreshToken: String = req.body.refreshToken;
   const username: String = req.body.username;
-  // - if refreshToken is not present in the database, 403
-  const dbRefreshToken = await knex
-    .select("refreshToken")
-    .from("tokens")
-    .where("tokens.refreshToken", refreshToken);
 
+  // - if refreshToken is not present in the database, 403
+  const dbRefreshToken = userModel.getRefreshToken(refreshToken);
   if (!dbRefreshToken.length) {
     return res.status(403).send("Could not find refreshToken in database");
   }
   // - if refreshToken is not valid, 403
-  const isVerified = await jwt.verify(
-    refreshToken,
-    process.env.REFRESH_TOKEN_SECRET
-  );
+  const isVerified = verifyToken(refreshToken);
+
   if (!isVerified) {
     return res.status(403).send("Failed to verify refreshToken");
   }

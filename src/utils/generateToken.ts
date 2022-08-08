@@ -1,3 +1,4 @@
+import { verify } from "crypto";
 import { User, Token } from "../types/types";
 const config = require("../../knexfile");
 const knex = require("knex")(config);
@@ -19,6 +20,10 @@ export function generateRefreshToken(username: String): Token {
   return jwt.sign({ username: username }, process.env.REFRESH_TOKEN_SECRET, {
     expiresIn: "30d",
   });
+}
+
+export function verifyToken(refreshToken: String): Boolean {
+  return jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
 }
 
 export async function generateTokens(user: User): Promise<Tokens | null> {
