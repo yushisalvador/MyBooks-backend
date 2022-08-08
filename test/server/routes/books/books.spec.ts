@@ -9,7 +9,7 @@ const app = buildServer();
 const fixtures = require("../fixtures.ts");
 
 describe("Books", () => {
-  let authToken: Number;
+  let authToken: String;
   let userId: Number;
 
   beforeEach(async () => {

@@ -6,6 +6,8 @@ import { User } from "../../../../src/types/types";
 const app = buildServer();
 const fixtures = require("../fixtures.ts");
 
+const loginUser = fixtures.loginUser();
+
 describe("POST User registration", () => {
   const newUserObj = fixtures.getUser();
   afterEach(async () => {
@@ -17,62 +19,93 @@ describe("POST User registration", () => {
     expect(res.statusCode).equals(201);
   });
 
-  it("should store the username and password to the database", async () => {
-    await request(app).post("/auth/register").send(newUserObj);
-    const allUsers = await request(app).get("/auth");
-    const newUser = await allUsers.body.find(
-      (user: User) => user.username === newUserObj.username
-    );
-    expect(newUser).to.not.equal(undefined);
+  it("should return 401 if username or password is not given", async () => {
+    const newObj = {
+      password: "12345",
+    };
+    const registerAttempt = await request(app)
+      .post("/auth/register")
+      .send(newObj);
+    expect(registerAttempt.statusCode).to.equal(401);
   });
 
-  it("should never store an unhashed password", async () => {
-    await request(app).post("/auth/register").send(newUserObj);
-    const allUsers = await request(app).get("/auth");
-    const findUser = await allUsers.body.find(
-      (user: User) => user.username === newUserObj.username
-    );
-    expect(findUser.pass).to.not.equal(newUserObj.pass);
+  describe("POST registration check db", async () => {
+    let userId: Number;
+    const newUserObj = fixtures.getUser();
+
+    afterEach(async () => {
+      await request(app).delete(`/auth?username=${newUserObj.username}`);
+      await request(app).delete(`/auth/logout?id=${userId}`);
+    });
+    it("should store the username and password to the database", async () => {
+      await request(app).post("/auth/register").send(newUserObj);
+
+      const getAuthUser = await request(app)
+        .post("/auth/login")
+        .send(newUserObj);
+      let token = getAuthUser.body.accessToken;
+      userId = getAuthUser.body.id;
+
+      const allUsers = await request(app)
+        .get("/auth")
+        .set({ Authorization: "Bearer " + token });
+      const newUser = await allUsers.body.find(
+        (user: User) => user.username === newUserObj.username
+      );
+
+      expect(newUser).to.not.equal(undefined);
+    });
+
+    it("should never store an unhashed password", async () => {
+      await request(app).post("/auth/register").send(newUserObj);
+
+      const getAuthUser = await request(app)
+        .post("/auth/login")
+        .send(newUserObj);
+      let token = getAuthUser.body.accessToken;
+      const allUsers = await request(app)
+        .get("/auth")
+        .set({ Authorization: "Bearer " + token });
+      const findUser = await allUsers.body.find(
+        (user: User) => user.username === newUserObj.username
+      );
+
+      expect(findUser.pass).to.not.equal(newUserObj.pass);
+    });
   });
-});
 
-it("should return 401 if username or password is not given", async () => {
-  const newObj = {
-    password: "12345",
-  };
-  const registerAttempt = await request(app)
-    .post("/auth/register")
-    .send(newObj);
-  expect(registerAttempt.statusCode).to.equal(401);
-});
+  describe("POST login errors", () => {
+    const userObj = fixtures.getUser();
+    const wrongPassUserObj = {
+      username: "kylehansamu",
+      pass: "wrongpass",
+    };
+    const wrongUsernameObj = {
+      username: "kyle_notfound",
+      pass: "wrongpass",
+    };
 
-describe("POST login errors", () => {
-  const userObj = fixtures.getUser();
-  const wrongPassUserObj = {
-    username: "kylehansamu",
-    pass: "wrongpass",
-  };
-  const wrongUsernameObj = {
-    username: "kyle_notfound",
-    pass: "wrongpass",
-  };
+    before(async () => {
+      await request(app).post("/auth/register").send(userObj);
+    });
 
-  before(async () => {
-    await request(app).post("/auth/register").send(userObj);
-  });
+    after(async () => {
+      await request(app).delete(`/auth?username=${userObj.username}`);
+    });
 
-  after(async () => {
-    await request(app).delete(`/auth?username=${userObj.username}`);
-  });
+    it("should return error 401 when passwords doesn't match", async () => {
+      const login = await request(app)
+        .post("/auth/login")
+        .send(wrongPassUserObj);
+      expect(login.statusCode).equals(401);
+    });
 
-  it("should return error 401 when passwords doesn't match", async () => {
-    const login = await request(app).post("/auth/login").send(wrongPassUserObj);
-    expect(login.statusCode).equals(401);
-  });
-
-  it("should return status 404 if the user with the username is not found", async () => {
-    const login = await request(app).post("/auth/login").send(wrongUsernameObj);
-    expect(login.statusCode).equals(404);
+    it("should return status 404 if the user with the username is not found", async () => {
+      const login = await request(app)
+        .post("/auth/login")
+        .send(wrongUsernameObj);
+      expect(login.statusCode).equals(404);
+    });
   });
 });
 
