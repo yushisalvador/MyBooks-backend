@@ -13,4 +13,11 @@ module.exports = {
       pass: "password",
     };
   },
+
+  loginUser() {
+    return {
+      username: "brandon",
+      pass: "password",
+    };
+  },
 };
