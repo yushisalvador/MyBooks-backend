@@ -11,7 +11,7 @@ interface Tokens {
 
 export function generateAccessToken(username: String): Token {
   return jwt.sign({ username: username }, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "20m",
+    expiresIn: "30m",
   });
 }
 
@@ -21,6 +21,15 @@ export function generateRefreshToken(username: String): Token {
   });
 }
 
+export function verifyRefreshToken(refreshToken: String): User {
+  return jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+}
+
+export function verifyAccessToken(refreshToken: String): User {
+  return jwt.verify(refreshToken, process.env.ACCESS_TOKEN_SECRET);
+}
+
+//Generate both access Token and Refresh Token used for login
 export async function generateTokens(user: User): Promise<Tokens | null> {
   try {
     const accessToken: Token = generateAccessToken(user.username);
@@ -36,7 +45,6 @@ export async function generateTokens(user: User): Promise<Tokens | null> {
         .update({ refreshToken: refreshToken })
         .where("user_id", user.id);
     } else {
-      console.log("adding new refresh token to database");
       await knex
         .insert({ user_id: user.id, refreshToken: refreshToken })
         .into("tokens");

@@ -1,43 +1,43 @@
 export {};
+import { User, Token } from "../types/types";
 
 const config = require("../../knexfile");
 const knex = require("knex")(config);
 const usersTable = "users";
 const tokensTable = "tokens";
 
-const getAllUsers = () => {
+export function getAllUsers(): Promise<Array<User>> {
   return knex.select("*").from(usersTable).catch(console.error);
-};
+}
 
-const deleteUser = (username: String) => {
+export function deleteUser(username: String): Promise<void> {
   return knex(usersTable)
     .select("*")
     .where("users.username", username)
     .del()
     .catch(console.error);
-};
+}
 
-const getUser = (username: String, password: String) => {
+export function getUser(username: String): Promise<Array<User>> {
   return knex
     .select("*")
     .from(usersTable)
     .where("users.username", username)
     .first()
     .catch(console.error);
-};
+}
 
-const registerNewUser = (userObj: Object) => {
+export function registerNewUser(userObj: Object): Promise<void> {
   return knex.insert(userObj).into(usersTable).catch(console.error);
-};
+}
 
-const logout = (id: Number) => {
+export function logout(id: Number): Promise<void> {
   return knex.select("*").from(tokensTable).where("user_id", id).del();
-};
+}
 
-module.exports = {
-  getAllUsers,
-  deleteUser,
-  registerNewUser,
-  getUser,
-  logout,
-};
+export function getRefreshToken(refreshToken: String): Promise<Array<Token>> {
+  return knex
+    .select("*")
+    .from(tokensTable)
+    .where("tokens.refreshToken", refreshToken);
+}
