@@ -2,7 +2,7 @@ require("dotenv").config();
 
 import { Request, Response, NextFunction } from "express";
 import { User } from "types/types";
-import { verifyAccessToken } from "utils/generateToken";
+import { verifyAccessToken } from "../utils/generateToken";
 
 declare module "express" {
   export interface Request {
