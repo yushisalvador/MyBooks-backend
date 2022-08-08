@@ -6,8 +6,6 @@ import { User } from "../../../../src/types/types";
 const app = buildServer();
 const fixtures = require("../fixtures.ts");
 
-const loginUser = fixtures.loginUser();
-
 describe("POST User registration", () => {
   const newUserObj = fixtures.getUser();
   afterEach(async () => {

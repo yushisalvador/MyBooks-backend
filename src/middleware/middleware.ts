@@ -9,11 +9,11 @@ declare module "express" {
   }
 }
 
-const authenticateFunction = async (
+export async function authenticateFunction(
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+) {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
   if (token == null) return res.sendStatus(403);
@@ -25,8 +25,4 @@ const authenticateFunction = async (
   } catch (e) {
     return res.sendStatus(403);
   }
-};
-
-module.exports = {
-  authenticateFunction,
-};
+}
