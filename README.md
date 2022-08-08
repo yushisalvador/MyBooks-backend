@@ -5,7 +5,7 @@ This is the backend of the application 'Library'. An application that helps you 
 
 ![image](https://user-images.githubusercontent.com/84162315/183370261-08760477-3526-4a16-a17a-21286f4cdf01.png)
 
-A separate repositroy for the Vue.js Frontend is available  👉🏼[here](https://github.com/yushisalvador/libraryapp-frontend).
+A separate repository for the Vue.js Frontend is available  👉🏼[here](https://github.com/yushisalvador/libraryapp-frontend).
 
 This is a RESTful API built with Node Express and Postgres.
 
