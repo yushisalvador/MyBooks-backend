@@ -2,7 +2,9 @@ const express = require("express");
 const userController = require("../user/user.controller");
 const router = express.Router();
 
-router.get("/", userController.getAllUsers);
+const middleware = require("../middleware/middleware");
+
+router.get("/", middleware.authenticateFunction, userController.getAllUsers);
 
 //POST
 router.post("/register", userController.addUser);

@@ -2,18 +2,18 @@ import { Request, Response } from "express";
 
 const bookModel = require("./books.model.ts");
 
-const getAllBooks = async (req: Request, res: Response) => {
+export const getAllBooks = async (req: Request, res: Response) => {
   const allBooks = await bookModel.getAllBooks();
   res.send(allBooks);
 };
 
-const getUserBooks = async (req: Request, res: Response) => {
+export const getUserBooks = async (req: Request, res: Response) => {
   const username = req.query.username;
   const userBooks = await bookModel.getUserBooks(username);
   res.send(userBooks);
 };
 
-const addNewBook = async (req: Request, res: Response) => {
+export const addNewBook = async (req: Request, res: Response) => {
   if (req.body.author && req.body.title) {
     const bookObj = {
       author: req.body.author,
@@ -28,7 +28,7 @@ const addNewBook = async (req: Request, res: Response) => {
   }
 };
 
-const editBook = async (req: Request, res: Response) => {
+export const editBook = async (req: Request, res: Response) => {
   const id = req.query.id;
   if (req.body.date_finished) {
     const newObj = {
@@ -42,23 +42,14 @@ const editBook = async (req: Request, res: Response) => {
   }
 };
 
-const deleteBook = async (req: Request, res: Response) => {
+export const deleteBook = async (req: Request, res: Response) => {
   const id = req.query.id;
   await bookModel.deleteBook(id);
   res.status(200).send("done!");
 };
 
-const deleteUserBooks = async (req: Request, res: Response) => {
+export const deleteUserBooks = async (req: Request, res: Response) => {
   const username = req.query.username;
   await bookModel.deleteUserBooks(username);
   res.status(200).send("done!");
-};
-
-module.exports = {
-  getAllBooks,
-  getUserBooks,
-  addNewBook,
-  editBook,
-  deleteBook,
-  deleteUserBooks,
 };

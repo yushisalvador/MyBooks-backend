@@ -5,11 +5,11 @@ const knex = require("knex")(config);
 const usersTable = "users";
 const tokensTable = "tokens";
 
-const getAllUsers = () => {
+export const getAllUsers = () => {
   return knex.select("*").from(usersTable).catch(console.error);
 };
 
-const deleteUser = (username: String) => {
+export const deleteUser = (username: String) => {
   return knex(usersTable)
     .select("*")
     .where("users.username", username)
@@ -17,7 +17,7 @@ const deleteUser = (username: String) => {
     .catch(console.error);
 };
 
-const getUser = (username: String, password: String) => {
+export const getUser = (username: String, password: String) => {
   return knex
     .select("*")
     .from(usersTable)
@@ -26,11 +26,11 @@ const getUser = (username: String, password: String) => {
     .catch(console.error);
 };
 
-const registerNewUser = (userObj: Object) => {
+export const registerNewUser = (userObj: Object) => {
   return knex.insert(userObj).into(usersTable).catch(console.error);
 };
 
-const logout = (id: Number) => {
+export const logout = (id: Number) => {
   return knex.select("*").from(tokensTable).where("user_id", id).del();
 };
 
