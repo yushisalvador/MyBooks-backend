@@ -1,9 +1,11 @@
 import request from "supertest";
 import buildServer from "../../../../src/server";
 import { expect } from "chai";
+import { User } from "../../../../src/types/types";
+
 const app = buildServer();
 const fixtures = require("../fixtures.ts");
-import { User } from "../../../../src/types/types";
+
 describe("POST User registration", () => {
   const newUserObj = fixtures.getUser();
   afterEach(async () => {

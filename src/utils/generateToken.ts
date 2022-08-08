@@ -9,34 +9,29 @@ interface Tokens {
   refreshToken: Token;
 }
 
-const generateTokens = async (user: User): Promise<Tokens | null> => {
+export function generateAccessToken(username: String): Token {
+  return jwt.sign({ username: username }, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: "20m",
+  });
+}
+
+export function generateRefreshToken(username: String): Token {
+  return jwt.sign({ username: username }, process.env.REFRESH_TOKEN_SECRET, {
+    expiresIn: "30d",
+  });
+}
+
+export async function generateTokens(user: User): Promise<Tokens | null> {
   try {
-    const payload = {
-      id: user.id,
-      username: user.username,
-    };
-    const accessToken: Token = jwt.sign(
-      payload,
-      process.env.ACCESS_TOKEN_SECRET,
-      {
-        expiresIn: "1m", // TODO: make this 15m and deduplicate
-      }
-    );
-    const refreshToken: Token = jwt.sign(
-      payload,
-      process.env.REFRESH_TOKEN_SECRET,
-      {
-        expiresIn: "30d",
-      }
-    );
+    const accessToken: Token = generateAccessToken(user.username);
+    const refreshToken: Token = generateRefreshToken(user.username);
 
     const token = await knex
       .select("*")
       .from("tokens")
       .where("user_id", user.id);
 
-    if (token) {
-      console.log("refresh token already in database - updating it");
+    if (token.length) {
       await knex("tokens")
         .update({ refreshToken: refreshToken })
         .where("user_id", user.id);
@@ -52,6 +47,4 @@ const generateTokens = async (user: User): Promise<Tokens | null> => {
     console.log(err);
     return null;
   }
-};
-
-export default generateTokens;
+}

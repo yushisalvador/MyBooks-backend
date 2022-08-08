@@ -1,14 +1,15 @@
 import { Request, Response, NextFunction } from "express";
+import { User } from "types/types";
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 
 declare module "express" {
   export interface Request {
-    user: any;
+    user: User;
   }
 }
 
-const authenticateFunction = (
+const authenticateFunction = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -17,15 +18,13 @@ const authenticateFunction = (
   const token = authHeader && authHeader.split(" ")[1];
   if (token == null) return res.sendStatus(403);
 
-  jwt.verify(
-    token,
-    process.env.ACCESS_TOKEN_SECRET,
-    (err: Object, user: unknown) => {
-      if (err) return res.sendStatus(403);
-      req.user = user;
-      next();
-    }
-  );
+  try {
+    const user = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    req.user = user;
+    next();
+  } catch (e) {
+    return res.sendStatus(403);
+  }
 };
 
 module.exports = {

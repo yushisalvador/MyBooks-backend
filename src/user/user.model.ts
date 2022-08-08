@@ -30,9 +30,14 @@ const registerNewUser = (userObj: Object) => {
   return knex.insert(userObj).into(usersTable).catch(console.error);
 };
 
+const logout = (id: Number) => {
+  return knex.select("*").from(tokensTable).where("user_id", id).del();
+};
+
 module.exports = {
   getAllUsers,
   deleteUser,
   registerNewUser,
   getUser,
+  logout,
 };

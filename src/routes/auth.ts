@@ -12,4 +12,5 @@ router.post("/token", userController.getAccessToken);
 //DELETE
 
 router.delete("/", userController.deleteUser);
+router.delete("/logout", userController.logout);
 export default router;
