@@ -1,4 +1,3 @@
-import { verify } from "crypto";
 import { User, Token } from "../types/types";
 const config = require("../../knexfile");
 const knex = require("knex")(config);
@@ -22,10 +21,15 @@ export function generateRefreshToken(username: String): Token {
   });
 }
 
-export function verifyToken(refreshToken: String): Boolean {
+export function verifyRefreshToken(refreshToken: String): User {
   return jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
 }
 
+export function verifyAccessToken(refreshToken: String): User {
+  return jwt.verify(refreshToken, process.env.ACCESS_TOKEN_SECRET);
+}
+
+//Generate both access Token and Refresh Token used for login
 export async function generateTokens(user: User): Promise<Tokens | null> {
   try {
     const accessToken: Token = generateAccessToken(user.username);

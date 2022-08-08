@@ -1,7 +1,8 @@
+require("dotenv").config();
+
 import { Request, Response, NextFunction } from "express";
 import { User } from "types/types";
-require("dotenv").config();
-const jwt = require("jsonwebtoken");
+import { verifyAccessToken } from "utils/generateToken";
 
 declare module "express" {
   export interface Request {
@@ -19,7 +20,7 @@ export async function authenticateFunction(
   if (token == null) return res.sendStatus(403);
 
   try {
-    const user = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    const user = verifyAccessToken(token);
     req.user = user;
     next();
   } catch (e) {
