@@ -17,13 +17,13 @@ This is a RESTful API built with Node Express and Postgres.
 * [BackLog](#backlog)
 
 # Technologies
-* [Node] (https://nodejs.org/en/) v16
+* [Node](https://nodejs.org/en/) v16
 * [TypeScript](https://www.typescriptlang.org/docs/) 4.7
 * [Express](https://expressjs.com/) 4.1
-* [PostgreSQL](https://www.postgresql.org/) with [Knex[(http://knexjs.org/)
+* [PostgreSQL](https://www.postgresql.org/) with [Knex](http://knexjs.org/)
 * [Heroku](https://devcenter.heroku.com/categories/reference)
 * [Chai](https://www.chaijs.com/), [Mocha](https://mochajs.org/), [Supertest](https://www.npmjs.com/package/supertest)
-* [JWT[(https://jwt.io/)
+* [JWT](https://jwt.io/)
 
 # Setup
 * Clone and open this repository by running the following command on your terminal. 
