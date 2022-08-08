@@ -6,7 +6,7 @@ const config = require("../../knexfile");
 const knex = require("knex")(config);
 const bcrypt = require("bcrypt");
 const userModel = require("./user.model.ts");
-import generateTokens from "../utils/generateToken";
+import { generateAccessToken, generateTokens } from "../utils/generateToken";
 const jwt = require("jsonwebtoken");
 
 module.exports = {
@@ -69,6 +69,7 @@ module.exports = {
 
     res.status(200).json({
       auth: true,
+      id: user.id,
       username: user.username,
       accessToken: accessToken,
       refreshToken: refreshToken,
@@ -84,7 +85,8 @@ module.exports = {
       .select("refreshToken")
       .from("tokens")
       .where("tokens.refreshToken", refreshToken);
-    if (!dbRefreshToken) {
+
+    if (!dbRefreshToken.length) {
       return res.status(403).send("could not find refreshToken in database");
     }
     // - if refreshToken is not valid, 403
@@ -95,14 +97,14 @@ module.exports = {
     if (!isVerified) {
       return res.status(403).send("failed to verify refreshToken");
     }
-    // - if refreshToken is valid, generate access token
-    const accessToken = jwt.sign(
-      { username: username },
-      process.env.ACCESS_TOKEN_SECRET,
-      {
-        expiresIn: "15m",
-      }
-    );
+
+    const accessToken = generateAccessToken(username);
     return res.status(200).send({ accessToken: accessToken });
+  },
+
+  async logout(req: Request, res: Response) {
+    const id = req.query.id;
+    await userModel.logout(id);
+    res.status(200).send("successfully logged out!");
   },
 };
