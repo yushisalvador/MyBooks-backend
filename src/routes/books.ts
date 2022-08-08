@@ -14,15 +14,19 @@ router.get(
 );
 
 // Post req
-router.post("/", booksController.addNewBook);
+router.post("/", middleware.authenticateFunction, booksController.addNewBook);
 
 //Put
 //can only edit date_finished
-router.put("/", booksController.editBook);
+router.put("/", middleware.authenticateFunction, booksController.editBook);
 // Delete req
 //delete single book
-router.delete("/", booksController.deleteBook);
+router.delete("/", middleware.authenticateFunction, booksController.deleteBook);
 //deletes all books in user's name
-router.delete("/mybooks", booksController.deleteUserBooks);
+router.delete(
+  "/mybooks",
+  middleware.authenticateFunction,
+  booksController.deleteUserBooks
+);
 
 export default router;
