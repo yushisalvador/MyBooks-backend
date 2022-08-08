@@ -41,7 +41,7 @@ module.exports = {
         pass: hashedPass,
       };
       await userModel.registerNewUser(newUser);
-      res.status(201).send("added!");
+      res.status(201).send("Added!");
     } else {
       res.status(401).send("Username and password are required!");
     }
@@ -51,19 +51,18 @@ module.exports = {
   // After that, password is read an access token is provided if successful
   async login(req: Request, res: Response) {
     const user = await userModel.getUser(req.body.username);
-
     if (!user) {
-      return res.status(404).send("cannot find user");
+      return res.status(404).send("Cannot find user");
     }
 
     const passwordMatches = await bcrypt.compare(req.body.pass, user.pass);
     if (!passwordMatches) {
-      return res.status(401).send("could not verify user!");
+      return res.status(401).send("Could not verify user!");
     }
 
     const tokens = await generateTokens(user);
     if (tokens === null) {
-      return res.status(401).send("could not generate tokens!");
+      return res.status(401).send("Could not generate tokens!");
     }
     const { accessToken, refreshToken } = tokens;
 
@@ -87,7 +86,7 @@ module.exports = {
       .where("tokens.refreshToken", refreshToken);
 
     if (!dbRefreshToken.length) {
-      return res.status(403).send("could not find refreshToken in database");
+      return res.status(403).send("Could not find refreshToken in database");
     }
     // - if refreshToken is not valid, 403
     const isVerified = await jwt.verify(
@@ -95,7 +94,7 @@ module.exports = {
       process.env.REFRESH_TOKEN_SECRET
     );
     if (!isVerified) {
-      return res.status(403).send("failed to verify refreshToken");
+      return res.status(403).send("Failed to verify refreshToken");
     }
 
     const accessToken = generateAccessToken(username);
@@ -105,6 +104,6 @@ module.exports = {
   async logout(req: Request, res: Response) {
     const id = req.query.id;
     await userModel.logout(id);
-    res.status(200).send("successfully logged out!");
+    res.status(200).send("Successfully logged out!");
   },
 };
