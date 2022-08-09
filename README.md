@@ -69,18 +69,20 @@ PORT=9000
 - `PUT` : Update the "date_finished" row of the book with the specified id
 - `DELETE` : Delete the book with the specified id
 
-/books/mybooks?username
+
+/api/mybooks?username
 
 - `GET` : Get books owned by the specified username
 - `DELETE` : Delete the books by the specified username
 
-/auth
+/auth/users
 
 - `GET` : Get all registered users
 
-/auth?username
+/auth/user?username
 
 - `DELETE` : Delete a specific user
+
 
 /auth/register
 
@@ -98,11 +100,11 @@ PORT=9000
 
 - `POST` : Generate a new access token with the refresh token
 
-# Test
 
+# Test
 This application uses Chai, Mocha and Supertest for api testing. To run the tests, run `npm test` in the root directory. A Test account is provided in the `fixtures.js` file.
 
 # BackLog
 
 - Write more tests for auth
-- Implement roles
+- Implement roles and enhance security
