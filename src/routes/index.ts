@@ -6,6 +6,6 @@ import books from "./books";
 const router = express.Router();
 
 router.use("/auth", auth);
-router.use("/books", books);
+router.use("/api", books);
 
 export default router;

@@ -3,28 +3,59 @@ const router = express.Router();
 
 const booksController = require("../books/books.controller");
 const middleware = require("../middleware/middleware");
-//Get req
-router.get("/", booksController.getAllBooks);
 
-// protected so only verified user can see
+// @desc Fetch all books
+// @access Public
+// @route GET /api/books
+
+router.get("/books", booksController.getAllBooks);
+
+// @desc Fetch books for single user
+// @access Authenticated users only
+// @route GET /api/books/mybooks?username
+
 router.get(
-  "/mybooks",
+  "/books/mybooks",
   middleware.authenticateFunction,
   booksController.getUserBooks
 );
 
-// Post req
-router.post("/", middleware.authenticateFunction, booksController.addNewBook);
+// @desc Add new book to the database
+// @access Authenticated users only
+// @route POST /api/books
 
-//Put
-//can only edit date_finished
-router.put("/", middleware.authenticateFunction, booksController.editBook);
-// Delete req
-//delete single book
-router.delete("/", middleware.authenticateFunction, booksController.deleteBook);
-//deletes all books in user's name
+router.post(
+  "/books",
+  middleware.authenticateFunction,
+  booksController.addNewBook
+);
+
+// @desc Update date_finished for a single book
+// @access Authenticated users only
+// @route PUT /api/books/:id
+
+router.put(
+  "/books/:id",
+  middleware.authenticateFunction,
+  booksController.editBook
+);
+
+// @desc Delete single book
+// @access Authenticated users only
+// @route DELETE /api/books/:id
+
 router.delete(
-  "/mybooks",
+  "/books/:id",
+  middleware.authenticateFunction,
+  booksController.deleteBook
+);
+
+// @desc Delete all books under user's account
+// @access Authenticated users only
+// @route PUT /api/books/mybooks?username=
+
+router.delete(
+  "/books/mybooks",
   middleware.authenticateFunction,
   booksController.deleteUserBooks
 );

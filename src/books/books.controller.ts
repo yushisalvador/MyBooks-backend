@@ -29,7 +29,7 @@ export async function addNewBook(req: Request, res: Response) {
 }
 
 export async function editBook(req: Request, res: Response) {
-  const id = req.query.id;
+  const id = req.params.id;
   if (req.body.date_finished) {
     const newObj = {
       date_finished: req.body.date_finished,
@@ -43,7 +43,7 @@ export async function editBook(req: Request, res: Response) {
 }
 
 export async function deleteBook(req: Request, res: Response) {
-  const id = req.query.id;
+  const id = req.params.id;
   await bookModel.deleteBook(id);
   res.status(200).send("done!");
 }
