@@ -97,6 +97,13 @@ describe("Books", () => {
       expect(numBooksAfter).greaterThan(numBooksBefore);
     });
 
+    it("should return status 403 when no header is sent with the request ", async () => {
+      const book = fixtures.getBook();
+      const req = await request(app).post("/books").send(book);
+
+      expect(req.statusCode).equals(403);
+    });
+
     it("should return status 404 when no author or title is entered", async () => {
       const postObj1 = {
         author: null,
@@ -115,6 +122,7 @@ describe("Books", () => {
         .post("/books")
         .send(postObj2)
         .set({ Authorization: "Bearer " + authToken });
+
       expect(res1.statusCode).equals(404);
       expect(res2.statusCode).equals(404);
     });
