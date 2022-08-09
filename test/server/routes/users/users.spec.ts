@@ -19,12 +19,23 @@ describe("POST User registration", () => {
 
   it("should return 401 if username or password is not given", async () => {
     const newObj = {
+      username: null,
       password: "12345",
+    };
+    const newObj2 = {
+      username: "no_pass_test",
+      password: null,
     };
     const registerAttempt = await request(app)
       .post("/auth/register")
       .send(newObj);
+
+    const registerAttempt2 = await request(app)
+      .post("/auth/register")
+      .send(newObj2);
+
     expect(registerAttempt.statusCode).to.equal(401);
+    expect(registerAttempt2.statusCode).to.equal(401);
   });
 
   describe("POST registration check db", async () => {

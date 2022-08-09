@@ -97,6 +97,13 @@ describe("Books", () => {
       expect(numBooksAfter).greaterThan(numBooksBefore);
     });
 
+    it("should return status 403 when no header is sent with the request ", async () => {
+      const book = fixtures.getBook();
+      const req = await request(app).post("/books").send(book);
+
+      expect(req.statusCode).equals(403);
+    });
+
     it("should return status 404 when no author or title is entered", async () => {
       const postObj1 = {
         author: null,
@@ -115,6 +122,7 @@ describe("Books", () => {
         .post("/books")
         .send(postObj2)
         .set({ Authorization: "Bearer " + authToken });
+
       expect(res1.statusCode).equals(404);
       expect(res2.statusCode).equals(404);
     });
@@ -124,7 +132,7 @@ describe("Books", () => {
     let id: Number;
     const addBook = fixtures.getBook();
 
-    before(async () => {
+    beforeEach(async () => {
       await request(app)
         .post("/books")
         .send(addBook)
@@ -154,6 +162,18 @@ describe("Books", () => {
       const afterLength = res2.body.length;
 
       expect(afterLength).lessThan(prevLength);
+    });
+
+    after(async () => {
+      await request(app)
+        .delete(`/books?id=${id}`)
+        .set({ Authorization: "Bearer " + authToken });
+    });
+
+    it("should fail and return status 403 when no header is sent ", async () => {
+      const res = await request(app).delete(`/books?id=${id}`);
+
+      expect(res.statusCode).equals(403);
     });
   });
 
@@ -188,6 +208,7 @@ describe("Books", () => {
         .put(`/books?id=${id}`)
         .send(editObj)
         .set({ Authorization: "Bearer " + authToken });
+
       expect(edit.statusCode).equals(200);
     });
 
@@ -220,6 +241,7 @@ describe("Books", () => {
         .put(`/books?id=${id}`)
         .send({ date_finished: null })
         .set({ Authorization: "Bearer " + authToken });
+
       expect(res.statusCode).equals(404);
     });
   });
