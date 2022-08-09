@@ -53,7 +53,7 @@ PORT=9000
 * ```GET```  : Get all books
 * ```POST``` : Add a new book
 
-/books?id
+/books/:id
 * ```PUT``` : Update the "date_finished" row of the book with the specified id
 * ```DELETE``` : Delete the book with the specified id
 
@@ -76,7 +76,7 @@ PORT=9000
 /auth/logout?id
 * ```DELETE``` : Logout and delete refresh token
 
-/auth/token?id
+/auth/token
 * ```POST``` : Generate a new access token with the refresh token
 
 # Test
@@ -84,6 +84,7 @@ This application uses Chai, Mocha and Supertest for api testing. To run the test
 
 # BackLog
 * Write more tests for auth
+* Implement roles
 
 
 
