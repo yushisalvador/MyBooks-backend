@@ -10,16 +10,6 @@ const middleware = require("../middleware/middleware");
 
 router.get("/books", booksController.getAllBooks);
 
-// @desc Fetch books for single user
-// @access Authenticated users only
-// @route GET /api/books/mybooks?username
-
-router.get(
-  "/books/mybooks",
-  middleware.authenticateFunction,
-  booksController.getUserBooks
-);
-
 // @desc Add new book to the database
 // @access Authenticated users only
 // @route POST /api/books
@@ -50,12 +40,22 @@ router.delete(
   booksController.deleteBook
 );
 
+// @desc Fetch books for single user
+// @access Authenticated users only
+// @route GET /api/books/mybooks?username
+
+router.get(
+  "/mybooks",
+  middleware.authenticateFunction,
+  booksController.getUserBooks
+);
+
 // @desc Delete all books under user's account
 // @access Authenticated users only
 // @route PUT /api/books/mybooks?username=
 
 router.delete(
-  "/books/mybooks",
+  "/mybooks",
   middleware.authenticateFunction,
   booksController.deleteUserBooks
 );
