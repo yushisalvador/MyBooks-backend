@@ -35,7 +35,7 @@ describe("POST User registration", () => {
       .send(newObj2);
 
     expect(registerAttempt.statusCode).to.equal(401);
-    expect(registerAttempt2.statusCode).to.equal(404);
+    expect(registerAttempt2.statusCode).to.equal(401);
   });
 
   describe("POST registration check db", async () => {
