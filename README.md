@@ -14,6 +14,7 @@ This is a RESTful API built with Node Express and Postgres.
 
 - [Technologies](#technologies)
 - [Setup](#setup)
+- [Guide](#guide)
 - [API](#api)
 - [Test](#test)
 - [BackLog](#backlog)
@@ -56,6 +57,35 @@ DB_PASSWORD= postgres password
 DB_NAME=library
 PORT=9000
 ```
+
+# Guide (Quick walkthrough the repository)
+
+`` db `` Contains the migration files and seeds. 
+
+`` src ``
+   * `` auth `` 
+       * `` auth.model.ts `` Contains all the Knex query builder code for auth.
+       * `` auth.controller.ts `` Contains logic for authorization used by routes, and uses auth.model.
+   * `` books `` 
+       * `` books.model.ts`` Contains all the Knex query builder code for books.
+       *  `` books.controller.ts `` Contains logic for authorization used by routes, and uses auth.model.
+   * `` middleware ``
+       * `` middleware.ts`` Contains auhtenticateFunction which serves as a middleware to protect routes.
+   * `` routes ``
+       * `` index.ts `` Contains all the main routes for the app -- /auth and /book.
+       * `` auth.ts `` Contains all the auth routes.
+       * `` books.ts `` Contains all the book api routes
+   * `` types ``
+       * `` types.ts `` Contains the types for User, Books, Token -- mainly use to specify types all throughout the app. 
+   * `` utils ``
+       * ``generateToken.ts `` Contains all the jwt related requests/functions
+   * `` index.ts `` Contains the server builder function.
+   * `` server.ts `` Sets up all the middlewares used all throughout the routes such as cors, express.
+   
+`` Procfile `` Used for Heroku deployment
+
+`` Knexfile.ts `` Houses all the Knex configurations
+
 
 # API
 #### Books
