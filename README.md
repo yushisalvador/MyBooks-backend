@@ -73,7 +73,7 @@ PORT=9000
 /auth/login
 * ```POST``` : Login to account
 
-/auth/logout?id
+/auth/logout/:id
 * ```DELETE``` : Logout and delete refresh token
 
 /auth/token
