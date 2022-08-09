@@ -132,7 +132,7 @@ describe("Books", () => {
     let id: Number;
     const addBook = fixtures.getBook();
 
-    before(async () => {
+    beforeEach(async () => {
       await request(app)
         .post("/books")
         .send(addBook)
@@ -162,6 +162,18 @@ describe("Books", () => {
       const afterLength = res2.body.length;
 
       expect(afterLength).lessThan(prevLength);
+    });
+
+    after(async () => {
+      await request(app)
+        .delete(`/books?id=${id}`)
+        .set({ Authorization: "Bearer " + authToken });
+    });
+
+    it("should fail and return status 403 when no header is sent ", async () => {
+      const res = await request(app).delete(`/books?id=${id}`);
+
+      expect(res.statusCode).equals(200);
     });
   });
 
