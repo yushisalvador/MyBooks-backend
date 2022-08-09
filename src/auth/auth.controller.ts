@@ -51,6 +51,7 @@ export async function addUser(req: Request, res: Response) {
 // After that, password is read an access token is provided if successful
 export async function login(req: Request, res: Response) {
   const user = await authModel.getUser(req.body.username);
+
   if (!user) {
     return res.status(404).send("Cannot find user");
   }
@@ -81,7 +82,7 @@ export async function getAccessToken(req: Request, res: Response) {
   const username: String = req.body.username;
 
   // - if refreshToken is not present in the database, 403
-  const dbRefreshToken = authModel.getRefreshToken(refreshToken);
+  const dbRefreshToken = await authModel.getRefreshToken(refreshToken);
   if (!dbRefreshToken.length) {
     return res.status(403).send("Could not find refreshToken in database");
   }

@@ -14,7 +14,7 @@ export async function getUserBooks(req: Request, res: Response) {
 }
 
 export async function addNewBook(req: Request, res: Response) {
-  if (req.body.author && req.body.title) {
+  if (req.body.author && req.body.title && req.body.registered_by) {
     const bookObj = {
       author: req.body.author,
       title: req.body.title,

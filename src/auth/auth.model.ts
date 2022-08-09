@@ -32,12 +32,18 @@ export function registerNewUser(userObj: Object): Promise<void> {
 }
 
 export function logout(id: Number): Promise<void> {
-  return knex.select("*").from(tokensTable).where("user_id", id).del();
+  return knex
+    .select("*")
+    .from(tokensTable)
+    .where("user_id", id)
+    .del()
+    .catch(console.error);
 }
 
 export function getRefreshToken(refreshToken: String): Promise<Array<Token>> {
   return knex
     .select("*")
     .from(tokensTable)
-    .where("tokens.refreshToken", refreshToken);
+    .where("tokens.refreshToken", refreshToken)
+    .catch(console.error);
 }
