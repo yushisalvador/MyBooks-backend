@@ -208,6 +208,7 @@ describe("Books", () => {
         .put(`/books?id=${id}`)
         .send(editObj)
         .set({ Authorization: "Bearer " + authToken });
+
       expect(edit.statusCode).equals(200);
     });
 
@@ -240,6 +241,7 @@ describe("Books", () => {
         .put(`/books?id=${id}`)
         .send({ date_finished: null })
         .set({ Authorization: "Bearer " + authToken });
+
       expect(res.statusCode).equals(404);
     });
   });
