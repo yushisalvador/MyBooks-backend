@@ -58,7 +58,7 @@ PORT=9000
 ```
 
 # API
-
+#### Books
 /books
 
 - `GET` : Get all books
@@ -75,6 +75,8 @@ PORT=9000
 - `GET` : Get books owned by the specified username
 - `DELETE` : Delete the books by the specified username
 
+
+#### Auth 
 /auth/users
 
 - `GET` : Get all registered users
