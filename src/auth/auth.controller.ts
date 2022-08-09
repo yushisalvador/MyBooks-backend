@@ -98,7 +98,7 @@ export async function getAccessToken(req: Request, res: Response) {
 }
 
 export async function logout(req: Request, res: Response) {
-  const id = req.query.id;
+  const id = req.params.id;
   await authModel.logout(id);
   res.status(200).send("Successfully logged out!");
 }
