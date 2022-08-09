@@ -173,7 +173,7 @@ describe("Books", () => {
     it("should fail and return status 403 when no header is sent ", async () => {
       const res = await request(app).delete(`/books?id=${id}`);
 
-      expect(res.statusCode).equals(200);
+      expect(res.statusCode).equals(403);
     });
   });
 
