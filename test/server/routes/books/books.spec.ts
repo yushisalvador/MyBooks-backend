@@ -23,28 +23,26 @@ describe("Books", () => {
   });
 
   afterEach(async () => {
-    await request(app).delete(`/auth/logout?id=${userId}`);
+    await request(app).delete(`/auth/logout/${userId}`);
   });
 
   describe("GET /books routes", () => {
     it("should respond with 200", async () => {
-      const res = await request(app).get("/books");
+      const res = await request(app).get("/api/books");
 
       expect(res.statusCode).equals(200);
     });
 
     it("should respond with 200 when retrieving books for a single user", async () => {
       const res = await request(app)
-        .get("/books/mybooks?username=caoh_the_nerd")
+        .get("/api/mybooks?username=caoh_the_nerd")
         .set({ Authorization: "Bearer " + authToken });
 
       expect(res.statusCode).equals(200);
     });
 
     it("should respond with 403 when retrieving books for a single user, and no header is sent", async () => {
-      const res = await request(app).get(
-        "/books/mybooks?username=caoh_the_nerd"
-      );
+      const res = await request(app).get("/api/mybooks?username=caoh_the_nerd");
 
       expect(res.statusCode).equals(403);
     });
@@ -61,7 +59,7 @@ describe("Books", () => {
       ];
 
       const res = await request(app)
-        .get("/books/mybooks?username=crazy_toffer")
+        .get("/api/mybooks?username=crazy_toffer")
         .set({ Authorization: "Bearer " + authToken });
 
       expect(res.body).to.deep.equal(expected);
@@ -72,26 +70,26 @@ describe("Books", () => {
   describe("POST /books routes", () => {
     before(async () => {
       await request(app)
-        .delete("/books/mybooks?username=test_user")
+        .delete("/api/mybooks?username=test_user")
         .set({ Authorization: "Bearer " + authToken });
     });
 
     after(async () => {
       await request(app)
-        .delete("/books/mybooks?username=test_user")
+        .delete("/api/mybooks?username=test_user")
         .set({ Authorization: "Bearer " + authToken });
     });
 
     it("should increment the length of the books in the db ", async () => {
-      const res1 = await request(app).get("/books");
+      const res1 = await request(app).get("/api/books");
       const numBooksBefore = res1.body.length;
 
       const book = fixtures.getBook();
       await request(app)
-        .post("/books")
+        .post("/api/books")
         .send(book)
         .set({ Authorization: "Bearer " + authToken });
-      const res2 = await request(app).get("/books");
+      const res2 = await request(app).get("/api/books");
       const numBooksAfter = res2.body.length;
 
       expect(numBooksAfter).greaterThan(numBooksBefore);
@@ -99,7 +97,7 @@ describe("Books", () => {
 
     it("should return status 403 when no header is sent with the request ", async () => {
       const book = fixtures.getBook();
-      const req = await request(app).post("/books").send(book);
+      const req = await request(app).post("/api/books").send(book);
 
       expect(req.statusCode).equals(403);
     });
@@ -115,11 +113,11 @@ describe("Books", () => {
       };
 
       const res1 = await request(app)
-        .post("/books")
+        .post("/api/books")
         .send(postObj1)
         .set({ Authorization: "Bearer " + authToken });
       const res2 = await request(app)
-        .post("/books")
+        .post("/api/books")
         .send(postObj2)
         .set({ Authorization: "Bearer " + authToken });
 
@@ -134,11 +132,11 @@ describe("Books", () => {
 
     beforeEach(async () => {
       await request(app)
-        .post("/books")
+        .post("/api/books")
         .send(addBook)
         .set({ Authorization: "Bearer " + authToken });
       const currBooks = await request(app)
-        .get(`/books/mybooks?username=${addBook.registered_by}`)
+        .get(`/api/mybooks?username=${addBook.registered_by}`)
         .set({ Authorization: "Bearer " + authToken });
 
       const idArr = await currBooks.body.map((book: Book) => book.id);
@@ -147,18 +145,18 @@ describe("Books", () => {
 
     after(async () => {
       await request(app).delete(
-        `/books/mybooks?username=${addBook.registered_by}`
+        `/api/mybooks?username=${addBook.registered_by}`
       );
     });
 
     it("should decrease the length of the books in the db", async () => {
-      const res1 = await request(app).get("/books");
+      const res1 = await request(app).get("/api/books");
       const prevLength = res1.body.length;
 
       await request(app)
-        .delete(`/books?id=${id}`)
+        .delete(`/api/books/${id}`)
         .set({ Authorization: "Bearer " + authToken });
-      const res2 = await request(app).get("/books");
+      const res2 = await request(app).get("/api/books");
       const afterLength = res2.body.length;
 
       expect(afterLength).lessThan(prevLength);
@@ -166,12 +164,12 @@ describe("Books", () => {
 
     after(async () => {
       await request(app)
-        .delete(`/books?id=${id}`)
+        .delete(`/api/books/${id}`)
         .set({ Authorization: "Bearer " + authToken });
     });
 
     it("should fail and return status 403 when no header is sent ", async () => {
-      const res = await request(app).delete(`/books?id=${id}`);
+      const res = await request(app).delete(`/api/books/${id}`);
 
       expect(res.statusCode).equals(403);
     });
@@ -185,27 +183,27 @@ describe("Books", () => {
 
     beforeEach(async () => {
       await request(app)
-        .post("/books")
+        .post("/api/books")
         .send(addBook)
         .set({ Authorization: "Bearer " + authToken });
     });
 
     afterEach(async () => {
       await request(app)
-        .delete(`/books/mybooks?username=${addBook.registered_by}`)
+        .delete(`/api/mybooks?username=${addBook.registered_by}`)
         .set({ Authorization: "Bearer " + authToken });
     });
 
     it("should return status 200 when the edit is success", async () => {
       const currBooks = await request(app)
-        .get(`/books/mybooks?username=${addBook.registered_by}`)
+        .get(`/api/mybooks?username=${addBook.registered_by}`)
         .set({ Authorization: "Bearer " + authToken });
 
       const idArr = await currBooks.body.map((book: Book) => book.id);
       const id = idArr[0];
 
       const edit = await request(app)
-        .put(`/books?id=${id}`)
+        .put(`/api/books/${id}`)
         .send(editObj)
         .set({ Authorization: "Bearer " + authToken });
 
@@ -214,17 +212,17 @@ describe("Books", () => {
 
     it("should modify the object", async () => {
       const currBooks = await request(app)
-        .get(`/books/mybooks?username=${addBook.registered_by}`)
+        .get(`/api/mybooks?username=${addBook.registered_by}`)
         .set({ Authorization: "Bearer " + authToken });
 
       const idArr = await currBooks.body.map((book: Book) => book.id);
       const id = idArr[0];
       await request(app)
-        .put(`/books?id=${id}`)
+        .put(`/api/books/${id}`)
         .send(editObj)
         .set({ Authorization: "Bearer " + authToken });
       const afterBooks = await request(app)
-        .get(`/books/mybooks?username=${addBook.registered_by}`)
+        .get(`/api/mybooks?username=${addBook.registered_by}`)
         .set({ Authorization: "Bearer " + authToken });
 
       expect(afterBooks.body).to.not.deep.equal(currBooks.body);
@@ -232,13 +230,13 @@ describe("Books", () => {
 
     it("should return status 404 when body is empty", async () => {
       const currBooks = await request(app)
-        .get(`/books/mybooks?username=${addBook.registered_by}`)
+        .get(`/api/mybooks?username=${addBook.registered_by}`)
         .set({ Authorization: "Bearer " + authToken });
 
       const idArr = await currBooks.body.map((book: Book) => book.id);
       const id = idArr[0];
       const res = await request(app)
-        .put(`/books?id=${id}`)
+        .put(`/api/books/${id}`)
         .send({ date_finished: null })
         .set({ Authorization: "Bearer " + authToken });
 

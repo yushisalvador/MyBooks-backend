@@ -1,10 +1,10 @@
 import routes from "./routes/index";
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, Application } from "express";
 
 const express = require("express");
 const cors = require("cors");
 
-export default function buildServer() {
+export default function buildServer(): Application {
   const app = express();
 
   app.get("/", (req: Request, res: Response) => {

@@ -4,9 +4,20 @@ const router = express.Router();
 
 const middleware = require("../middleware/middleware");
 
+// @desc Get all user, mainly for testing
+// @access Private
+// @route POST /auth/users
+
+router.get(
+  "/users",
+  middleware.authenticateFunction,
+  authController.getAllUsers
+);
+
 // @desc Register a new account to the database
 // @access Public
 // @route POST /auth/register
+
 router.post("/register", authController.addUser);
 
 // @desc Login to account
@@ -21,9 +32,13 @@ router.post("/token", authController.getAccessToken);
 
 // @desc Delete certain user
 // @access Authenticated only
-// @route DELETE /auth
+// @route DELETE /auth/user?username
 
-router.delete("/", middleware.authenticateFunction, authController.deleteUser);
+router.delete(
+  "/user",
+  middleware.authenticateFunction,
+  authController.deleteUser
+);
 
 // @desc Logout, delete refresh token
 // @route DELETE /auth/logout/:id
