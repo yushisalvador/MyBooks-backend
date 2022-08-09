@@ -57,14 +57,14 @@ PORT=9000
 * ```PUT``` : Update the "date_finished" row of the book with the specified id
 * ```DELETE``` : Delete the book with the specified id
 
-/books/mybooks?username
+/mybooks?username
 * ```GET``` : Get books owned by the specified username
 * ```DELETE``` : Delete the books by the specified username
 
-/auth
+/auth/users
 * ```GET``` : Get all registered users
 
-/auth?username
+/auth/user?username
 * ```DELETE``` : Delete a specific user
 
 /auth/register
@@ -84,7 +84,7 @@ This application uses Chai, Mocha and Supertest for api testing. To run the test
 
 # BackLog
 * Write more tests for auth
-* Implement roles
+* Implement roles for better security
 
 
 
