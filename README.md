@@ -56,6 +56,9 @@ DB_USER= postgres username
 DB_PASSWORD= postgres password
 DB_NAME=library
 PORT=9000
+ACCESS_TOKEN_SECRET=random access token
+REFRESH_TOKEN_SECRET=random refresh token
+
 ```
 ### Start server
 - To sart the server, run ``` npm run dev ``` . This command will start the server with nodemon.
