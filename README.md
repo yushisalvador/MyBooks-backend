@@ -94,12 +94,12 @@ REFRESH_TOKEN_SECRET=random refresh token
 
 # API
 #### Books
-/books
+/api/books
 
 - `GET` : Get all books
 - `POST` : Add a new book
 
-/books/:id
+/api/books/:id
 
 - `PUT` : Update the "date_finished" row of the book with the specified id
 - `DELETE` : Delete the book with the specified id
